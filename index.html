@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html>
+
+<!-- CSS goes here -->
+
+<style>
+    body {
+        background-color: #def3f8;
+        font-family: 'Montserrat', sans-serif;
+        text-align: center;
+        padding: 40px;
+    }
+
+    h1 {
+        color: #2DCDDF
+    }
+
+    table {
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+        border: 1px solid;
+        text-align: center;
+        padding: 25px;
+        height: 100px;
+        vertical-align: bottom;
+    }
+
+    tr:hover {
+        background-color: #2DCDDF;
+    }
+
+
+    #datetimetext {
+        font-family: Verdana, Tahoma, sans-serif;
+        color: #3795BD;
+    }
+
+    .psi {
+
+        color: #537FE7;
+    }
+
+    #body {
+        background-color: #DEFCF9;
+    }
+
+    .copyleft {
+        display: inline-block;
+        transform: rotate(180deg);
+    }
+</style>
+
+
+<!-- HTML goes here -->
+
+<head>
+    <title> Assignment 1 - PSI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+    <a align="center" href="https://data.gov.sg/dataset/psi">
+        <h1>Singapore's Pollutant Standards Index (PSI)</h1>
+    </a>
+    <h2 id="datetimetext"></h2>
+    <table id="PSItable">
+        <tbody>
+            <tr>
+                <th>Metrics</th>
+                <th>National</th>
+                <th>Central</th>
+                <th>West</th>
+                <th>East</th>
+                <th>North</th>
+                <th>South</th>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+
+        <br>
+        <span class="copyleft">&copy;</span><a href="https://github.com/ancga"> Angga Y</a>
+
+    </div>
+
+
+    <!-- JavaScript goes here -->
+    <script>
+        var today = new Date();
+        datetimetext.innerText = "Retrieval Date: " + today.toLocaleString();
+
+        /* to make a function that adds data to tables*/
+        var tableadd = (datapt, rownum) => {
+            var td = document.createElement('td')
+            td.textContent = datapt
+            rownum.appendChild(td)
+        }
+
+        fetch('https://api.data.gov.sg/v1/environment/psi')
+            .then(response => response.json())
+            .then(data => {
+                /* to get readings*/
+                var table = document.querySelector('#PSItable')
+                var read = data.items[0].readings
+                let timestamp = data.items[0].update_timestamp;
+                $("#timestring").text(timestamp);
+
+                /* for loop to put in rows in table*/
+                for (var data in read) {
+                    var trow = document.createElement('tr')
+                    table.appendChild(trow)
+
+                    tableadd(data, trow)
+
+                    for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
+                        tableadd(read[data][field], trow)
+                }
+
+
+            });
+    </script>
+
+
+</html>
